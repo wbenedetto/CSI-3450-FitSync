@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitSync — Gym Management</title>
+
+  <!-- CSS: load order matters (base → layout → components) -->
+  <link rel="stylesheet" href="static/css/login.css">
+  <link rel="stylesheet" href="static/css/layout.css">
+  <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="login-screen">
+  <div class="login-box">
+    <div class="logo-large">Fit<span>Sync</span></div>
+    <p class="login-sub">Gym Management System</p>
+    <p class="login-prompt">Sign in as</p>
+    <div class="role-cards">
+      <div class="role-card" onclick="login('member')">
+        <div class="role-icon">🏋️</div>
+        <div class="role-title">Member</div>
+        <div class="role-desc">Profile, classes &amp; check-ins</div>
+      </div>
+      <div class="role-card" onclick="login('employee')">
+        <div class="role-icon">🗂️</div>
+        <div class="role-title">Employee</div>
+        <div class="role-desc">Members, classes &amp; equipment</div>
+      </div>
+    </div>
+    <p class="login-hint">Demo — click a role to preview the dashboard</p>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" class="app-layout hidden">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">Fit<span>Sync</span></div>
+    <div class="sidebar-role" id="sidebar-role-label"></div>
+    <nav id="sidebar-nav"></nav>
+    <div class="sidebar-footer">
+      <button class="nav-item" onclick="logout()">
+        <span class="nav-icon">&#8592;</span> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <div>
+        <h1 class="page-title" id="page-title">Dashboard</h1>
+        <p  class="page-sub"   id="page-sub"></p>
+      </div>
+      <div class="topbar-actions" id="topbar-actions"></div>
+    </header>
+    <main class="page-body" id="page-body"></main>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- JS: load order matters (db → core → member → employee) -->
+<script src="static/js/db.js"></script>
+<script src="static/js/core.js"></script>
+<script src="static/js/member.js"></script>
+<script src="static/js/employee.js"></script>
+
+</body>
+</html>
+
