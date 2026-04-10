@@ -1,0 +1,4 @@
+I keep forgetting the command to run the application:
+
+pip install fastapi uvicorn jinja2 mysql-connector-python python-multipart python-dotenv
+uvicorn app.main:app --reload
