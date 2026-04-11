@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync — Member Profile</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Fit<span>Sync</span></div>
+
+            <div class="sidebar-section-label">MEMBER PORTAL</div>
+
+            <nav class="sidebar-nav">
+                <a href="/member/{{ member.Mem_ID }}" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-user"></i></span>
+                    <span>My Profile</span>
+                </a>
+
+                <a href="/member/{{ member.Mem_ID }}/classes" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-book-open"></i></span>
+                    <span>Browse Classes</span>
+                </a>
+
+                <a href="/member/{{ member.Mem_ID }}/checkins" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-check"></i></span>
+                    <span>Check-in History</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <a href="/" class="signout-link">
+                <span class="nav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+                <span>Sign Out</span>
+            </a>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="page-header">
+                <h1 class="page-title">My Profile</h1>
+                <p class="page-subtitle">Manage your account</p>
+            </div>
+
+            <div class="member-summary">
+                <div class="member-avatar">
+                    {{ member.Mem_FName[0] }}{{ member.Mem_LName[0] }}
+                </div>
+
+                <div class="member-summary-text">
+                    <div class="member-name">{{ member.Mem_FName }} {{ member.Mem_LName }}</div>
+                    <div class="member-meta">
+                        <span class="member-pill">{{ member.Tier_Name }}</span>
+                        <span class="member-id">ID: {{ member.Mem_ID }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-grid">
+                <section class="panel-card panel-large">
+                    <div class="panel-title">PERSONAL INFORMATION</div>
+
+                    <form method="post" action="/member/{{ member.Mem_ID }}/update-profile">
+                        <div class="field-block">
+                            <label for="mem_fname">First Name</label>
+                            <input type="text" id="mem_fname" name="mem_fname" class="field-input" value="{{ member.Mem_FName }}" required>
+                        </div>
+
+                        <div class="field-block">
+                            <label for="mem_lname">Last Name</label>
+                            <input type="text" id="mem_lname" name="mem_lname" class="field-input" value="{{ member.Mem_LName }}" required>
+                        </div>
+
+                        <div class="field-block">
+                            <label for="mem_dob">Date of Birth</label>
+                            <input type="date" id="mem_dob" name="mem_dob" class="field-input" value="{{ member.Mem_DOB }}" required>
+                        </div>
+
+                        <div class="field-block">
+                            <label for="mem_phone">Phone</label>
+                            <input type="text" id="mem_phone" name="mem_phone" class="field-input" value="{{ member.Mem_Phone }}" required>
+                        </div>
+
+                        <button class="action-btn" type="submit">Save Changes</button>
+                    </form>
+                </section>
+
+                <div class="right-column">
+                    <section class="panel-card">
+                        <div class="panel-title">EMERGENCY CONTACT (ECONTACT)</div>
+
+                        <form method="post" action="/member/{{ member.Mem_ID }}/update-contact">
+                            <div class="field-block">
+                                <label for="econ_fname">First Name</label>
+                                <input type="text" id="econ_fname" name="econ_fname" class="field-input" value="{{ member.Econ_FName }}" required>
+                            </div>
+
+                            <div class="field-block">
+                                <label for="econ_lname">Last Name</label>
+                                <input type="text" id="econ_lname" name="econ_lname" class="field-input" value="{{ member.Econ_LName }}" required>
+                            </div>
+
+                            <div class="field-block">
+                                <label for="econ_phone">Phone</label>
+                                <input type="text" id="econ_phone" name="econ_phone" class="field-input" value="{{ member.Econ_Phone }}" required>
+                            </div>
+
+                            <button class="action-btn" type="submit">Save Contact</button>
+                        </form>
+                    </section>
+
+                    <section class="panel-card">
+                        <div class="panel-title">MEMBERSHIP TIER</div>
+
+                        <div class="membership-price">
+                            {{ member.Tier_Name }} — ${{ member.Tier_Cost }}/mo
+                        </div>
+
+                        <div class="membership-note">Billing renews monthly.</div>
+
+                        <form method="post" action="/member/{{ member.Mem_ID }}/update-tier">
+                            <div class="field-block">
+                                <label for="tier_id">Change Tier</label>
+                                <select id="tier_id" name="tier_id" class="field-input" required>
+                                    <option value="1" {% if member.Tier_ID == 1 %}selected{% endif %}>Basic ($25.00/mo)</option>
+                                    <option value="2" {% if member.Tier_ID == 2 %}selected{% endif %}>Premium ($40.00/mo)</option>
+                                </select>
+                            </div>
+
+                            <div class="info-box">
+                                *Only Premium members may enroll in classes.
+                            </div>
+
+                            <button class="action-btn" type="submit">Update Tier</button>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</body>
+</html>

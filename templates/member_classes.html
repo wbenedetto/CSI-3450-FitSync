@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync — Browse Classes</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Fit<span>Sync</span></div>
+
+            <div class="sidebar-section-label">MEMBER PORTAL</div>
+
+            <nav class="sidebar-nav">
+                <a href="/member/{{ member.Mem_ID }}" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user"></i></span>
+                    <span>My Profile</span>
+                </a>
+
+                <a href="/member/{{ member.Mem_ID }}/classes" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-book-open"></i></span>
+                    <span>Browse Classes</span>
+                </a>
+
+                <a href="/member/{{ member.Mem_ID }}/checkins" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-check"></i></span>
+                    <span>Check-in History</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <a href="/" class="signout-link">
+                <span class="nav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+                <span>Sign Out</span>
+            </a>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="page-header">
+                <h1 class="page-title">Browse Classes</h1>
+                <p class="page-subtitle">Available classes — Premium members only</p>
+            </div>
+
+            <div class="class-card-grid">
+                {% for cls in classes %}
+                <section class="class-card">
+                    <div class="class-card-top">
+                        <div>
+                            <div class="class-name">{{ cls.Class_Name }}</div>
+                            <div class="class-instructor">Instructor: {{ cls.Instructor }}</div>
+                        </div>
+
+                        {% if cls.Is_Enrolled %}
+                            <span class="class-badge enrolled">Enrolled</span>
+                        {% else %}
+                            <span class="class-badge open">{{ cls.Class_Cap - cls.Enrolled_Count }} open</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="class-meta">
+                        <span><i class="fa-regular fa-calendar"></i> {{ cls.Class_Start.strftime("%b %d, %Y") if cls.Class_Start else "" }}</span>
+                        <span><i class="fa-regular fa-clock"></i> {{ cls.Class_Length }} min</span>
+                        <span><i class="fa-solid fa-user-group"></i> {{ cls.Enrolled_Count }}/{{ cls.Class_Cap }}</span>
+                    </div>
+
+                    
+
+                    {% if cls.Is_Enrolled %}
+                        <form method="post" action="/member/{{ member.Mem_ID }}/classes/{{ cls.Class_ID }}/drop">
+                            <button type="submit" class="danger-btn">Drop Class</button>
+                        </form>
+                    {% else %}
+                        {% if member.Tier_ID == 2 and cls.Enrolled_Count < cls.Class_Cap %}
+                            <form method="post" action="/member/{{ member.Mem_ID }}/classes/{{ cls.Class_ID }}/register">
+                                <button type="submit" class="action-btn">Register</button>
+                            </form>
+                        {% else %}
+                            <button type="button" class="disabled-btn" disabled>Register</button>
+                        {% endif %}
+                    {% endif %}
+                </section>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+</body>
+</html>

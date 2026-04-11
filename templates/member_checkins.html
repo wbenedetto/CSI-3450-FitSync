@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync — Check-in History</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Fit<span>Sync</span></div>
+
+            <div class="sidebar-section-label">MEMBER PORTAL</div>
+
+            <nav class="sidebar-nav">
+                <a href="/member/{{ member.Mem_ID }}" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user"></i></span>
+                    <span>My Profile</span>
+                </a>
+
+                <a href="/member/{{ member.Mem_ID }}/classes" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-book-open"></i></span>
+                    <span>Browse Classes</span>
+                </a>
+
+                <a href="/member/{{ member.Mem_ID }}/checkins" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-check"></i></span>
+                    <span>Check-in History</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <a href="/" class="signout-link">
+                <span class="nav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+                <span>Sign Out</span>
+            </a>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="page-header">
+                <h1 class="page-title">Check-in History</h1>
+                <p class="page-subtitle">Your gym visit log</p>
+            </div>
+
+            <section class="panel-card checkin-form-card">
+                <div class="panel-title">NEW CHECK-IN</div>
+
+                <form method="post" action="/member/{{ member.Mem_ID }}/checkin" class="checkin-form">
+                    <div class="field-block">
+                        <label for="guest_brought">Bringing a Guest?</label>
+                        <select id="guest_brought" name="guest_brought" class="field-input" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="action-btn">Check In Now</button>
+                </form>
+            </section>
+
+            <section class="panel-card">
+                <div class="panel-title">CHECK-IN HISTORY ({{ checkins|length }} VISITS)</div>
+
+                {% if checkins %}
+                    <div class="checkin-list">
+                        {% for checkin in checkins %}
+                            <div class="checkin-row">
+                                <div class="checkin-time-block">
+                                    <div class="checkin-date">
+                                        {{ checkin.Check_Datetime.strftime("%Y-%m-%d") }}
+                                    </div>
+                                    <div class="checkin-time">
+                                        {{ checkin.Check_Datetime.strftime("%I:%M %p").lstrip("0") }}
+                                    </div>
+                                </div>
+
+                                <div class="checkin-tag">
+                                    {% if checkin.Guest_Brought == 1 %}
+                                        Guest brought
+                                    {% else %}
+                                        No guest
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">No check-ins recorded yet.</div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>
