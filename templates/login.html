@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync — Gym Management</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="login-body">
+    <main class="login-page">
+        <section class="login-panel">
+            <div class="brand-block">
+                <!-- <img src="/static/FILENAME.jpg" alt="FitSync logo" class="brand-logo"> ADD LOGO HERE (templates/static) AND REPLACE FILENAME --> 
+                <h1 class="brand-title">Fit<span>Sync</span></h1>
+                <p class="brand-subtitle">Gym Management System</p>
+                <p class="signin-text">Sign in as</p>
+            </div>
+
+            <div class="role-grid">
+                <form method="get" action="/member" class="role-form">
+                    <button type="submit" class="role-card">
+                        <div class="role-icon">
+                            <i class="fa-solid fa-dumbbell"></i>
+                        </div>
+                        <div class="role-name">Member</div>
+                        <div class="role-desc">Profile, classes &amp; check-ins</div>
+                    </button>
+                </form>
+
+                <form method="get" action="/employee" class="role-form">
+                    <button type="submit" class="role-card">
+                        <div class="role-icon">
+                            <i class="fa-solid fa-briefcase"></i>
+                        </div>
+                        <div class="role-name">Employee</div>
+                        <div class="role-desc">Members, classes &amp; equipment</div>
+                    </button>
+                </form>
+            </div>
+
+            <p class="login-footer">Click a role to preview the dashboard</p>
+        </section>
+    </main>
+</body>
+</html>
