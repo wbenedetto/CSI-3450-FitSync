@@ -76,8 +76,8 @@ body {
 }
 
 .brand-logo {
-    width: 54px;
-    height: 54px;
+    width: 200px;
+    height: 200px;
     object-fit: cover;
     border-radius: 16px;
     border: 1px solid var(--border);
