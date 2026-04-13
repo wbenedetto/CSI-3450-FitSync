@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync — Class Schedule</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Fit<span>Sync</span></div>
+
+            <div class="sidebar-section-label">EMPLOYEE PORTAL</div>
+
+            <nav class="sidebar-nav">
+                <a href="/employee/{{ emp_id }}/members" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    <span>Members</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/members/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-plus"></i></span>
+                    <span>Register Member</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/checkins" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span>
+                    <span>Record Check-In</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <span>Class Schedule</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus"></i></span>
+                    <span>Create Class</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/attendance" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-check"></i></span>
+                    <span>Class Attendance</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/equipment" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-wrench"></i></span>
+                    <span>Equipment</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/tickets" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
+                    <span>Tickets</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <a href="/" class="signout-link">
+                <span class="nav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+                <span>Sign Out</span>
+            </a>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="page-header employee-header">
+                <div>
+                    <h1 class="page-title">Class Schedule</h1>
+                    <p class="page-subtitle">All scheduled classes</p>
+                </div>
+
+                <a href="/employee/{{ emp_id }}/classes/new" class="top-action-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>New Class</span>
+                </a>
+            </div>
+
+            <section class="panel-card">
+                <div class="employee-table-wrap">
+                    <table class="employee-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Class Name</th>
+                                <th>Instructor (Employee)</th>
+                                <th>Date / Time</th>
+                                <th>Duration</th>
+                                <th>Enrolled</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cls in classes %}
+                            <tr>
+                                <td>{{ cls.Class_ID }}</td>
+                                <td><strong>{{ cls.Class_Name }}</strong></td>
+                                <td>{{ cls.Instructor }}</td>
+                                <td>
+                                    {{ cls.Class_Start.strftime("%b %d, %Y") if cls.Class_Start else "" }}<br>
+                                    <span class="table-subtext">{{ cls.Class_Start.strftime("%H:%M") if cls.Class_Start else "" }}</span>
+                                </td>
+                                <td>{{ cls.Class_Length }} min</td>
+                                <td>{{ cls.Enrolled_Count }} / {{ cls.Class_Cap }}</td>
+                                <td>
+                                    <div class="table-actions">
+                                        <a href="/employee/{{ emp_id }}/classes/{{ cls.Class_ID }}/edit" class="table-btn edit-btn">Edit</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

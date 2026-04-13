@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync — Record Check-in</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Fit<span>Sync</span></div>
+
+            <div class="sidebar-section-label">EMPLOYEE PORTAL</div>
+
+            <nav class="sidebar-nav">
+                <a href="/employee/{{ emp_id }}/members" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    <span>Members</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/members/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-plus"></i></span>
+                    <span>Register Member</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/checkins" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span>
+                    <span>Record Check-In</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <span>Class Schedule</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus"></i></span>
+                    <span>Create Class</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/attendance" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-check"></i></span>
+                    <span>Class Attendance</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/equipment" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-wrench"></i></span>
+                    <span>Equipment</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/tickets" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
+                    <span>Tickets</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <a href="/" class="signout-link">
+                <span class="nav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+                <span>Sign Out</span>
+            </a>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="page-header">
+                <h1 class="page-title">Record Check-In</h1>
+                <p class="page-subtitle">Log member arrivals</p>
+            </div>
+
+            <div class="employee-checkin-top">
+                <section class="panel-card">
+                    <div class="panel-title">RECORD CHECK-IN</div>
+
+                    <form method="post" action="/employee/{{ emp_id }}/checkins/create" class="employee-checkin-form">
+                        <div class="field-block">
+                            <label for="member_search">Search Member</label>
+                            <input type="text" id="member_search" class="field-input" placeholder="Search by name or ID">
+                        </div>
+
+                        <div class="field-block">
+                            <label for="mem_id">Member *</label>
+                            <select id="mem_id" name="mem_id" class="field-input" required>
+                                <option value="">Select member</option>
+                                {% for member in members %}
+                                    <option value="{{ member.Mem_ID }}">
+                                        {{ member.Mem_FName }} {{ member.Mem_LName }} ({{ member.Mem_ID }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="field-block">
+                            <label for="guest_brought">Guest Brought?</label>
+                            <select id="guest_brought" name="guest_brought" class="field-input" required>
+                                <option value="0">No guest</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="checkin-helper-text">
+                            Date &amp; time set to now automatically.
+                        </div>
+
+                        <button type="submit" class="action-btn">Check In</button>
+                    </form>
+                </section>
+
+                <section class="panel-card today-checkin-card">
+                    <div class="panel-title">Today's Check-ins</div>
+                    <div class="today-checkin-number">{{ today_checkins }}</div>
+                </section>
+            </div>
+
+            <section class="panel-card">
+                <div class="panel-title">ALL CHECK-INS</div>
+
+                <div class="employee-table-wrap">
+                    <table class="employee-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Member</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Guest</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for checkin in checkins %}
+                            <tr>
+                                <td>{{ checkin.Check_ID }}</td>
+
+                                <td>
+                                    <div class="member-cell">
+                                        <div class="member-mini-avatar">
+                                            {{ checkin.Mem_FName[0] }}{{ checkin.Mem_LName[0] }}
+                                        </div>
+                                        <div class="member-cell-name">
+                                            {{ checkin.Mem_FName }} {{ checkin.Mem_LName }}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>{{ checkin.Check_Datetime.strftime("%Y-%m-%d") }}</td>
+                                <td>{{ checkin.Check_Datetime.strftime("%I:%M %p").lstrip("0") }}</td>
+
+                                <td>
+                                    <span class="guest-badge {% if checkin.Guest_Brought == 1 %}guest-yes{% else %}guest-no{% endif %}">
+                                        {% if checkin.Guest_Brought == 1 %}
+                                            Yes
+                                        {% else %}
+                                            No
+                                        {% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const memberSearch = document.getElementById("member_search");
+        const memberSelect = document.getElementById("mem_id");
+        const originalOptions = Array.from(memberSelect.options).map(option => ({
+            value: option.value,
+            text: option.text
+        }));
+
+        memberSearch.addEventListener("input", function () {
+            const query = this.value.toLowerCase().trim();
+
+            memberSelect.innerHTML = "";
+
+            originalOptions.forEach((optionData, index) => {
+                if (optionData.value === "" || optionData.text.toLowerCase().includes(query)) {
+                    const option = document.createElement("option");
+                    option.value = optionData.value;
+                    option.textContent = optionData.text;
+                    memberSelect.appendChild(option);
+                }
+            });
+
+            if (memberSelect.options.length > 1) {
+                memberSelect.selectedIndex = 1;
+            } else {
+                memberSelect.selectedIndex = 0;
+            }
+        });
+    </script>
+</body>
+</html>

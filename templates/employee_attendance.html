@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync — Attendance</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Fit<span>Sync</span></div>
+
+            <div class="sidebar-section-label">EMPLOYEE PORTAL</div>
+
+            <nav class="sidebar-nav">
+                <a href="/employee/{{ emp_id }}/members" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    <span>Members</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/members/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-plus"></i></span>
+                    <span>Register Member</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/checkins" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span>
+                    <span>Record Check-In</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <span>Class Schedule</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus"></i></span>
+                    <span>Create Class</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/attendance" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-check"></i></span>
+                    <span>Class Attendance</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/equipment" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-wrench"></i></span>
+                    <span>Equipment</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/tickets" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
+                    <span>Tickets</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <a href="/" class="signout-link">
+                <span class="nav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+                <span>Sign Out</span>
+            </a>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="page-header">
+                <h1 class="page-title">Attendance</h1>
+                <p class="page-subtitle">Manage class registrations</p>
+            </div>
+
+            <div class="attendance-list">
+                {% for cls in classes %}
+                <section class="panel-card attendance-card">
+                    <div class="attendance-card-top">
+                        <div>
+                            <div class="attendance-class-name">{{ cls.Class_Name }}</div>
+                            <div class="attendance-class-meta">
+                                {{ cls.Class_Start.strftime("%b %d, %Y") if cls.Class_Start else "" }}
+                                · {{ cls.Class_Length }} min
+                                · Instructor: {{ cls.Instructor }}
+                            </div>
+                        </div>
+
+                        <div class="attendance-actions-top">
+                            <span class="enrolled-pill">{{ cls.Enrolled_Count }}/{{ cls.Class_Cap }}</span>
+                            <button type="button"
+                                    class="action-btn small-btn"
+                                    onclick="openAttendanceModal('{{ cls.Class_ID }}')"
+                                    {% if cls.Enrolled_Count >= cls.Class_Cap %}disabled{% endif %}>
+                                Add Member
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="attendance-member-list">
+                        {% for member in cls.members %}
+                        <div class="attendance-member-row">
+                            <div class="member-cell">
+                                <div class="member-mini-avatar">
+                                    {{ member.Mem_FName[0] }}{{ member.Mem_LName[0] }}
+                                </div>
+                                <div>
+                                    <div class="member-cell-name">{{ member.Mem_FName }} {{ member.Mem_LName }}</div>
+                                    <div class="table-subtext">{{ member.Mem_ID }} · Reg #{{ member.Reg_Num }}</div>
+                                </div>
+                            </div>
+
+                            <form method="post"
+                                  action="/employee/{{ emp_id }}/attendance/{{ cls.Class_ID }}/remove/{{ member.Mem_ID }}"
+                                  onsubmit="return confirm('Remove this member from the class?');">
+                                <button type="submit" class="table-btn delete-btn">Remove</button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div id="modal-{{ cls.Class_ID }}" class="attendance-modal-overlay">
+                        <div class="attendance-modal">
+                            <div class="attendance-modal-header">
+                                <h3>Add Member</h3>
+                                <button type="button" class="modal-close-btn" onclick="closeAttendanceModal('{{ cls.Class_ID }}')">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <form method="post" action="/employee/{{ emp_id }}/attendance/{{ cls.Class_ID }}/add">
+                                <div class="field-block">
+                                    <label for="search-{{ cls.Class_ID }}">Search Premium Member</label>
+                                    <input type="text"
+                                           id="search-{{ cls.Class_ID }}"
+                                           class="field-input attendance-search"
+                                           data-target="select-{{ cls.Class_ID }}"
+                                           placeholder="Search by name or ID">
+                                </div>
+
+                                <div class="field-block">
+                                    <label for="select-{{ cls.Class_ID }}">Member</label>
+                                    <select id="select-{{ cls.Class_ID }}" name="mem_id" class="field-input" required>
+                                        <option value="">Select member</option>
+                                        {% for member in cls.available_members %}
+                                            <option value="{{ member.Mem_ID }}">
+                                                {{ member.Mem_FName }} {{ member.Mem_LName }} ({{ member.Mem_ID }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="register-actions">
+                                    <button type="submit" class="action-btn">Add Member</button>
+                                    <button type="button" class="cancel-link-btn" onclick="closeAttendanceModal('{{ cls.Class_ID }}')">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function openAttendanceModal(classId) {
+            document.getElementById(`modal-${classId}`).classList.add("show-modal");
+        }
+
+        function closeAttendanceModal(classId) {
+            document.getElementById(`modal-${classId}`).classList.remove("show-modal");
+        }
+
+        document.querySelectorAll(".attendance-search").forEach((searchInput) => {
+            const selectId = searchInput.dataset.target;
+            const select = document.getElementById(selectId);
+            const originalOptions = Array.from(select.options).map(option => ({
+                value: option.value,
+                text: option.text
+            }));
+
+            searchInput.addEventListener("input", function () {
+                const query = this.value.toLowerCase().trim();
+                select.innerHTML = "";
+
+                originalOptions.forEach((optionData) => {
+                    if (optionData.value === "" || optionData.text.toLowerCase().includes(query)) {
+                        const option = document.createElement("option");
+                        option.value = optionData.value;
+                        option.textContent = optionData.text;
+                        select.appendChild(option);
+                    }
+                });
+
+                if (select.options.length > 1) {
+                    select.selectedIndex = 1;
+                } else {
+                    select.selectedIndex = 0;
+                }
+            });
+        });
+
+        document.querySelectorAll(".attendance-modal-overlay").forEach((overlay) => {
+            overlay.addEventListener("click", function (e) {
+                if (e.target === overlay) {
+                    overlay.classList.remove("show-modal");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

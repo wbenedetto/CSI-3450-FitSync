@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync — Equipment</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Fit<span>Sync</span></div>
+
+            <div class="sidebar-section-label">EMPLOYEE PORTAL</div>
+
+            <nav class="sidebar-nav">
+                <a href="/employee/{{ emp_id }}/members" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    <span>Members</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/members/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-plus"></i></span>
+                    <span>Register Member</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/checkins" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span>
+                    <span>Record Check-In</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <span>Class Schedule</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus"></i></span>
+                    <span>Create Class</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/attendance" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-check"></i></span>
+                    <span>Class Attendance</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/equipment" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-wrench"></i></span>
+                    <span>Equipment</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/tickets" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
+                    <span>Tickets</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <a href="/" class="signout-link">
+                <span class="nav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+                <span>Sign Out</span>
+            </a>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="page-header employee-header">
+                <div>
+                    <h1 class="page-title">Equipment</h1>
+                    <p class="page-subtitle">Gym equipment status</p>
+                </div>
+
+                <button type="button" class="top-action-btn" onclick="openEquipmentModal()">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add Equipment</span>
+                </button>
+            </div>
+
+            <div class="equipment-summary-grid">
+                <section class="panel-card equipment-summary-card">
+                    <div class="panel-title">Total Equipment</div>
+                    <div class="summary-number">{{ total_equipment }}</div>
+                </section>
+
+                <section class="panel-card equipment-summary-card">
+                    <div class="panel-title">Operational</div>
+                    <div class="summary-number operational-number">{{ operational_count }}</div>
+                </section>
+
+                <section class="panel-card equipment-summary-card">
+                    <div class="panel-title">Non-Operational</div>
+                    <div class="summary-number non-operational-number">{{ non_operational_count }}</div>
+                </section>
+            </div>
+
+            <section class="panel-card">
+                <div class="employee-table-wrap">
+                    <table class="employee-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Equipment</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in equipment %}
+                            <tr>
+                                <td>{{ item.Equip_ID }}</td>
+                                <td><strong>{{ item.Equip_Name }}</strong></td>
+                                <td>
+                                    <span class="status-badge {% if item.Equip_Status == 'Operational' %}status-operational{% else %}status-broken{% endif %}">
+                                        {{ item.Equip_Status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <form method="post" action="/employee/{{ emp_id }}/equipment/{{ item.Equip_ID }}/toggle">
+                                        {% if item.Equip_Status == 'Operational' %}
+                                            <button type="submit" class="table-btn delete-btn">Mark Broken</button>
+                                        {% else %}
+                                            <button type="submit" class="table-btn edit-btn">Mark Operational</button>
+                                        {% endif %}
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div id="equipment-modal" class="attendance-modal-overlay">
+                        <div class="attendance-modal">
+                            <div class="attendance-modal-header">
+                                <h3>Add Equipment</h3>
+                                <button type="button" class="modal-close-btn" onclick="closeEquipmentModal()">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <form method="post" action="/employee/{{ emp_id }}/equipment/create">
+                                <div class="field-block">
+                                    <label for="equip_name">Equipment Name</label>
+                                    <input type="text" id="equip_name" name="equip_name" class="field-input" maxlength="45" required>
+                                </div>
+
+                                <div class="register-actions">
+                                    <button type="submit" class="action-btn">Add Equipment</button>
+                                    <button type="button" class="cancel-link-btn" onclick="closeEquipmentModal()">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        function openEquipmentModal() {
+            document.getElementById("equipment-modal").classList.add("show-modal");
+        }
+
+        function closeEquipmentModal() {
+            document.getElementById("equipment-modal").classList.remove("show-modal");
+        }
+
+        document.getElementById("equipment-modal").addEventListener("click", function (e) {
+            if (e.target === this) {
+                closeEquipmentModal();
+            }
+        });
+    </script>
+</body>
+</html>

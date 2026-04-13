@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync — Edit Member</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Fit<span>Sync</span></div>
+
+            <div class="sidebar-section-label">EMPLOYEE PORTAL</div>
+
+            <nav class="sidebar-nav">
+                <a href="/employee/{{ emp_id }}/members" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    <span>Members</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/members/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-plus"></i></span>
+                    <span>Register Member</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/checkins" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span>
+                    <span>Record Check-In</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <span>Class Schedule</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-plus"></i></span>
+                    <span>Create Class</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/attendance" class="nav-link"></a>
+                    <span class="nav-icon"><i class="fa-solid fa-check"></i></span>
+                    <span>Class Attendance</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/equipment" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-wrench"></i></span>
+                    <span>Equipment</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/tickets" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
+                    <span>Tickets</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <a href="/" class="signout-link">
+                <span class="nav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+                <span>Sign Out</span>
+            </a>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="page-header employee-header">
+                <div>
+                    <h1 class="page-title">Edit Member</h1>
+                    <p class="page-subtitle">Update member information</p>
+                    <p class="page-subtitle">Member ID: {{ member.Mem_ID }}</p>
+                </div>
+
+                <a href="/employee/{{ emp_id }}/members" class="top-action-btn secondary-action-btn">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Exit</span>
+                </a>
+            </div>
+
+            <div class="profile-grid">
+                <section class="panel-card panel-large">
+                    <div class="panel-title">PERSONAL INFORMATION</div>
+
+                    <form method="post" action="/employee/{{ emp_id }}/members/{{ member.Mem_ID }}/update-profile">
+                        <div class="form-two-col">
+                            <div class="field-block">
+                                <label for="mem_fname">First Name</label>
+                                <input type="text" id="mem_fname" name="mem_fname" class="field-input"
+                                       value="{{ member.Mem_FName }}"
+                                       maxlength="45" pattern="[A-Za-z\s\-']+" title="Letters only" required>
+                            </div>
+
+                            <div class="field-block">
+                                <label for="mem_lname">Last Name</label>
+                                <input type="text" id="mem_lname" name="mem_lname" class="field-input"
+                                       value="{{ member.Mem_LName }}"
+                                       maxlength="45" pattern="[A-Za-z\s\-']+" title="Letters only" required>
+                            </div>
+                        </div>
+
+                        <div class="form-two-col">
+                            <div class="field-block">
+                                <label for="mem_dob">Date of Birth</label>
+                                <input type="date" id="mem_dob" name="mem_dob" class="field-input"
+                                       value="{{ member.Mem_DOB }}" required>
+                            </div>
+
+                            <div class="field-block">
+                                <label for="mem_phone">Phone</label>
+                                <input type="text" id="mem_phone" name="mem_phone" class="field-input phone-input"
+                                       value="{{ member.Mem_Phone }}"
+                                       placeholder="(248)-600-3001" maxlength="15"
+                                       pattern="^\(\d{3}\)-\d{3}-\d{4}$" title="Use format (###)-###-####" required>
+                            </div>
+                        </div>
+
+                        <div class="field-block">
+                            <label for="mem_email">Email</label>
+                            <input type="email" id="mem_email" name="mem_email" class="field-input"
+                                   value="{{ member.Mem_Email }}"
+                                   maxlength="45" required>
+                        </div>
+
+                        <button class="action-btn" type="submit">Save Changes</button>
+                    </form>
+                </section>
+
+                <div class="right-column">
+                    <section class="panel-card">
+                        <div class="panel-title">EMERGENCY CONTACT</div>
+
+                        <form method="post" action="/employee/{{ emp_id }}/members/{{ member.Mem_ID }}/update-contact">
+                            <div class="field-block">
+                                <label for="econ_fname">First Name</label>
+                                <input type="text" id="econ_fname" name="econ_fname" class="field-input"
+                                       value="{{ member.Econ_FName }}"
+                                       maxlength="45" pattern="[A-Za-z\s\-']+" title="Letters only" required>
+                            </div>
+
+                            <div class="field-block">
+                                <label for="econ_lname">Last Name</label>
+                                <input type="text" id="econ_lname" name="econ_lname" class="field-input"
+                                       value="{{ member.Econ_LName }}"
+                                       maxlength="45" pattern="[A-Za-z\s\-']+" title="Letters only" required>
+                            </div>
+
+                            <div class="field-block">
+                                <label for="econ_phone">Phone</label>
+                                <input type="text" id="econ_phone" name="econ_phone" class="field-input phone-input"
+                                       value="{{ member.Econ_Phone }}"
+                                       placeholder="(248)-600-3001" maxlength="15"
+                                       pattern="^\(\d{3}\)-\d{3}-\d{4}$" title="Use format (###)-###-####" required>
+                            </div>
+
+                            <button class="action-btn" type="submit">Save Contact</button>
+                        </form>
+                    </section>
+
+                    <section class="panel-card">
+                        <div class="panel-title">MEMBERSHIP TIER</div>
+
+                        <div class="membership-price">
+                            {{ member.Tier_Name }} — ${{ member.Tier_Cost }}/mo
+                        </div>
+
+                        <div class="membership-note">Billing renews monthly.</div>
+
+                        <form method="post" action="/employee/{{ emp_id }}/members/{{ member.Mem_ID }}/update-tier">
+                            <div class="field-block">
+                                <label for="tier_id">Change Tier</label>
+                                <select id="tier_id" name="tier_id" class="field-input" required>
+                                    <option value="1" {% if member.Tier_ID == 1 %}selected{% endif %}>Basic — $25.00/mo</option>
+                                    <option value="2" {% if member.Tier_ID == 2 %}selected{% endif %}>Premium — $40.00/mo</option>
+                                </select>
+                            </div>
+
+                            <button class="action-btn" type="submit">Update Tier</button>
+                        </form>
+                    </section>
+
+                    <section class="panel-card">
+                        <div class="panel-title">DELETE MEMBER</div>
+
+                        <div class="membership-note">
+                            This will permanently remove the member and related records.
+                        </div>
+
+                        <form method="post"
+                              action="/employee/{{ emp_id }}/members/{{ member.Mem_ID }}/delete"
+                              onsubmit="return confirm('Are you sure you want to delete this member? This cannot be undone.');">
+                            <button type="submit" class="danger-btn">Delete Member</button>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function formatPhoneInput(input) {
+            let digits = input.value.replace(/\D/g, "").slice(0, 10);
+
+            if (digits.length === 0) {
+                input.value = "";
+            } else if (digits.length < 4) {
+                input.value = `(${digits}`;
+            } else if (digits.length < 7) {
+                input.value = `(${digits.slice(0, 3)})-${digits.slice(3)}`;
+            } else {
+                input.value = `(${digits.slice(0, 3)})-${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+            }
+        }
+
+        const phoneInputs = document.querySelectorAll(".phone-input");
+
+        phoneInputs.forEach((input) => {
+            input.addEventListener("input", function () {
+                formatPhoneInput(this);
+            });
+        });
+    </script>
+</body>
+</html>

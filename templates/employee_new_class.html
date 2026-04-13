@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSync — Create Class</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-brand">Fit<span>Sync</span></div>
+
+            <div class="sidebar-section-label">EMPLOYEE PORTAL</div>
+
+            <nav class="sidebar-nav">
+                <a href="/employee/{{ emp_id }}/members" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
+                    <span>Members</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/members/new" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-user-plus"></i></span>
+                    <span>Register Member</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/checkins" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-location-dot"></i></span>
+                    <span>Record Check-In</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                    <span>Class Schedule</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/classes/new" class="nav-link active">
+                    <span class="nav-icon"><i class="fa-solid fa-plus"></i></span>
+                    <span>Create Class</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/attendance" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-check"></i></span>
+                    <span>Class Attendance</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/equipment" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-wrench"></i></span>
+                    <span>Equipment</span>
+                </a>
+
+                <a href="/employee/{{ emp_id }}/tickets" class="nav-link">
+                    <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
+                    <span>Tickets</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <a href="/" class="signout-link">
+                <span class="nav-icon"><i class="fa-solid fa-arrow-left"></i></span>
+                <span>Sign Out</span>
+            </a>
+        </aside>
+
+        <main class="dashboard-main">
+            <div class="page-header">
+                <h1 class="page-title">Create Class</h1>
+                <p class="page-subtitle">Add a new class</p>
+            </div>
+
+            {% if error %}
+                <div class="form-error">{{ error }}</div>
+            {% endif %}
+
+            <section class="panel-card create-class-card">
+                <form method="post" action="/employee/{{ emp_id }}/classes/create">
+                    <div class="field-block">
+                        <label for="class_name">Class Name *</label>
+                        <input type="text" id="class_name" name="class_name" class="field-input"
+                               placeholder="e.g. Morning Yoga" maxlength="45" required>
+                    </div>
+
+                    <div class="form-two-col">
+                        <div class="field-block">
+                            <label for="class_start">Start Date &amp; Time *</label>
+                            <input type="datetime-local" id="class_start" name="class_start" class="field-input" required>
+                        </div>
+
+                        <div class="field-block">
+                            <label for="class_length">Duration (minutes) *</label>
+                            <input type="number" id="class_length" name="class_length" class="field-input"
+                                   min="1" placeholder="45" required>
+                        </div>
+                    </div>
+
+                    <div class="field-block">
+                        <label for="class_cap">Capacity</label>
+                        <input type="number" id="class_cap" name="class_cap" class="field-input"
+                               min="1" max="10" value="10" required>
+                        <div class="field-help-text">Maximum capacity is 10.</div>
+                    </div>
+
+                    <div class="field-block">
+                        <label for="instructor_id">Assigned Instructor (Employee) *</label>
+                        <select id="instructor_id" name="instructor_id" class="field-input" required>
+                            {% if available_employees %}
+                                {% for employee in available_employees %}
+                                    <option value="{{ employee.Emp_ID }}">
+                                        {{ employee.Emp_FName }} {{ employee.Emp_LName }}
+                                    </option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="">No available employees</option>
+                            {% endif %}
+                        </select>
+                        <div class="field-help-text">Only employees not already leading a class are listed.</div>
+                    </div>
+
+                    <div class="register-actions">
+                        <button type="submit" class="action-btn" {% if not available_employees %}disabled{% endif %}>Create Class</button>
+                        <a href="/employee/{{ emp_id }}/classes" class="cancel-link">Cancel</a>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
