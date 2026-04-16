@@ -65,6 +65,7 @@ CSI-3450-FitSync/
 │   ├── employee_tickets.html
 │   ├── employee_equipment.html
 │   └── employee_member.html
+├── venv/
 ├── .env
 ├── .gitignore
 ├── requirements.txt
