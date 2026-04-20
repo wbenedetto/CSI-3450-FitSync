@@ -1,19 +1,6 @@
--- ═══════════════════════════════════════════════════════════════
---  FitSync Gym Management System
---  SQL Transaction Queries — Phase 3
---  CSI 3450: Database Design
---
---  Entities: TIER, MEMBER, ECONTACT, CHECKIN,
---            CLASS, REGISTRATION, EMPLOYEE, EQUIPMENT, TICKET
---  No TRAINER — employees lead classes.
--- ═══════════════════════════════════════════════════════════════
  
 USE fitsync;
- 
--- ───────────────────────────────────────────────────────────────
---  SECTION 1: MEMBER TRANSACTIONS
--- ───────────────────────────────────────────────────────────────
- 
+-- MEMBER TRANSACTIONS
 -- 1.1  Read — view member profile with tier and ECONTACT
 -- Maps to: Membership information (View)
 SELECT
@@ -102,10 +89,7 @@ WHERE MEMBER_Mem_ID = :mem_id
 ORDER BY Arv_Date DESC, Arv_Time DESC;
  
  
--- ───────────────────────────────────────────────────────────────
---  SECTION 2: EMPLOYEE TRANSACTIONS
--- ───────────────────────────────────────────────────────────────
- 
+--  EMPLOYEE TRANSACTIONS
 -- 2.1  Read — view all members
 -- Maps to: Employee duties (Read/Update)
 SELECT
@@ -303,10 +287,7 @@ FROM MEMBER
 WHERE Mem_ID = :mem_id;
  
  
--- ───────────────────────────────────────────────────────────────
 --  SECTION 3: REPORTING QUERIES
--- ───────────────────────────────────────────────────────────────
- 
 -- 3.1  Members per tier
 SELECT
     t.Tier_Name,
